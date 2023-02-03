@@ -14,7 +14,7 @@ model User {
   id               Int       @id @default(autoincrement())
   email            String    @unique
   userName         String    @unique
-  friendTo         User[]    @relation("UserIsFriendTo")
+  friendTo         User[]    @relation("UserIsFriendTo") 
   isFriend         User[]    @relation("UserIsFriendTo")
   messagesSent     Message[] @relation("sentBy")
   messagesRecieved Message[] @relation("receivedBy")
@@ -26,5 +26,5 @@ model Message {
   sender     User   @relation("sentBy", fields: [senderId], references: [id])
   receiverId Int
   receiver   User   @relation("receivedBy", fields: [receiverId], references: [id])
-  text       String 
+  text       String
 }
