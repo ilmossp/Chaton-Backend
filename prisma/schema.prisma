@@ -8,14 +8,14 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  
 }
 
 model User {
   id               Int       @id @default(autoincrement())
   email            String    @unique
   userName         String    @unique
-  friendTo         User[]    @relation("UserIsFriendTo") 
+  password         String    @default("")
+  friendTo         User[]    @relation("UserIsFriendTo")
   isFriend         User[]    @relation("UserIsFriendTo")
   messagesSent     Message[] @relation("sentBy")
   messagesRecieved Message[] @relation("receivedBy")
