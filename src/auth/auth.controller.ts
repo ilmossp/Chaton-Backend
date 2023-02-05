@@ -1,5 +1,6 @@
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import RegistrateUserDto from './dto/registrateUser.dto';
 import RequestWithUser from './interfaces/requestWithUser.interface';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
 
@@ -17,7 +18,6 @@ export class AuthController {
   @Post('login')
   async login(@Body() request: RequestWithUser) {
     const user = request.user;
-    user.password = undefined;
     return user;
   }
 }

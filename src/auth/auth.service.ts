@@ -1,16 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/users/user.service';
 import * as bcrypt from 'bcrypt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { User } from '@prisma/client';
+import RegistrateUserDto from './dto/registrateUser.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly UserService: UserService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly UserService: UserService) {}
 
   async registerUser(registrationData: RegistrateUserDto): Promise<User> {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
@@ -38,21 +35,25 @@ export class AuthService {
   }
 
   async getAuthenticatedUser(email: string, plainTextPassword: string) {
-    try{const user = await this.UserService.user({ email: email });
-    const isPasswordMatching = await bcrypt.compare(
-      plainTextPassword,
-      user.password,
-    );
-    if (!isPasswordMatching) {
+    try {
+      const user = await this.UserService.user({ email: email });
+      const isPasswordMatching = await bcrypt.compare(
+        plainTextPassword,
+        user.password,
+      );
+      if (!isPasswordMatching) {
+        throw new HttpException(
+          'wrong credentials provided',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      user.password = undefined;
+      return user;
+    } catch (error) {
       throw new HttpException(
-        'wrong credentials provided',
+        'Wrong credentials provided',
         HttpStatus.BAD_REQUEST,
       );
-    }
-    user.password=undefined
-    return user}
-    catch(error){
-        throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
     }
   }
 
