@@ -12,6 +12,10 @@ export class UserController {
     return this.UserService.user({ id: Number(id) });
   }
 
+  @Get(':email')
+  async getUserByEmail(@Param('email') email: string):Promise<User>{
+    return this.UserService.user({email: String(email)})
+  }
   @Post()
   async registerUser(@Body() userData: CreateUserDto): Promise<User> {
     return this.UserService.createUser(userData);
@@ -19,7 +23,7 @@ export class UserController {
 
   @Patch()
   async updateUser(@Body() userData: UpdateUserDto):Promise<User>{
-    return this.UserService.updateUser(userData.id,userData)
+    return this.UserService.updateUser({where: userData,data: userData})
   }
 
 }
