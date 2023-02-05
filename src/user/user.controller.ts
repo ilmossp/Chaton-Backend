@@ -19,7 +19,7 @@ export class UserController {
 
   @Patch()
   async updateUser(@Body() userData: UpdateUserDto):Promise<User>{
-    return this.UserService.updateUser(userData)
+    return this.UserService.updateUser(userData.id,userData)
   }
 
 }
