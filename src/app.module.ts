@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { PrismaService } from './prisma-service/prisma.service';
 import { UserService } from './users/user.service';
 import { UserController } from './users/user.controller';
-
+import { ConfigModule } from "@nestjs/config";
 import { MessageController } from './message/message.controller';
 import { MessageService } from './message/message.service';
 import { AuthModule } from './auth/auth.module';
@@ -12,7 +12,7 @@ import { UserModule } from './users/user.module';
 import { MessageModule } from './message/message.module';
 
 @Module({
-  imports: [AuthModule, UserModule, MessageModule],
+  imports: [AuthModule, UserModule, MessageModule,ConfigModule.forRoot({ isGlobal: true })],
   controllers: [AppController, UserController, MessageController],
   providers: [AppService, PrismaService, UserService, MessageService],
 })

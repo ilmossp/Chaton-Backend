@@ -1,9 +1,19 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  Request,
+  Response,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import RegistrateUserDto from './dto/registrateUser.dto';
 import RequestWithUser from './interfaces/requestWithUser.interface';
-import { LocalAuthenticationGuard } from './localAuthentication.guard';
+import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
+import { Response as ExpressResponse } from "express";
+import { CookieAuthenticationGuard } from './guards/cookieAuthentication.guard';
+
 
 @Controller('auth')
 export class AuthController {
@@ -17,8 +27,22 @@ export class AuthController {
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
   @Post('login')
-  async login(@Body() request: RequestWithUser) {
+  async login(@Request() request: RequestWithUser) {
     const user = request.user;
     return user;
+  }
+
+  @HttpCode(200)
+  @UseGuards(CookieAuthenticationGuard)
+  @Post('logout')
+  async logout(
+    @Request() request: RequestWithUser,
+    @Response() response: ExpressResponse,
+  ) {
+    //@ts-ignore
+    request.logout(request.user, (err, next) => {
+      if (err) next(err);
+      response.json({ message: 'Logged out successfully' });
+    });
   }
 }
