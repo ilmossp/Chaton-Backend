@@ -38,4 +38,6 @@ model Request {
   from   User @relation("from", fields: [fromId], references: [id])
   toId   Int
   to     User @relation("to", fields: [toId], references: [id])
+  accepted Boolean @default(false)
 }
+

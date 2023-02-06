@@ -10,9 +10,10 @@ import { MessageService } from './message/message.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './users/user.module';
 import { MessageModule } from './message/message.module';
+import { RequestsModule } from './requests/requests.module';
 
 @Module({
-  imports: [AuthModule, UserModule, MessageModule,ConfigModule.forRoot({ isGlobal: true })],
+  imports: [AuthModule, UserModule, MessageModule,ConfigModule.forRoot({ isGlobal: true }), RequestsModule],
   controllers: [AppController, UserController, MessageController],
   providers: [AppService, PrismaService, UserService, MessageService],
 })
