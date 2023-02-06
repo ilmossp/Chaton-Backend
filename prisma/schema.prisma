@@ -19,6 +19,8 @@ model User {
   isFriend         User[]    @relation("UserIsFriendTo")
   messagesSent     Message[] @relation("sentBy")
   messagesRecieved Message[] @relation("receivedBy")
+  requestsSent     Request[] @relation("from")
+  requestReceived  Request[] @relation("to")
 }
 
 model Message {
@@ -28,4 +30,12 @@ model Message {
   receiverId Int
   receiver   User   @relation("receivedBy", fields: [receiverId], references: [id])
   text       String
+}
+
+model Request {
+  id     Int  @id @default(autoincrement())
+  fromId Int
+  from   User @relation("from", fields: [fromId], references: [id])
+  toId   Int
+  to     User @relation("to", fields: [toId], references: [id])
 }
