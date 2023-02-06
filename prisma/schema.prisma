@@ -39,6 +39,6 @@ model Request {
   toId   Int
   to     User @relation("to", fields: [toId], references: [id])
   accepted Boolean @default(false)
-  @@unique([fromId,toId])
+  //@@unique([fromId,toId])
 }
 
