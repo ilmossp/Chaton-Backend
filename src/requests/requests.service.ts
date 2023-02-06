@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma-service/prisma.service';
 
@@ -7,11 +7,16 @@ export class RequestsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async request(requestWhereUniqueInput: Prisma.RequestWhereUniqueInput) {
-    const request = await this.prisma.request.findUnique({
-      where: requestWhereUniqueInput,
-    });
-    return request;
+    try {
+      const request = await this.prisma.request.findUnique({
+        where: requestWhereUniqueInput,
+      });
+      return request;
+    } catch (error) {
+      throw new HttpException('internal server error', 500);
+    }
   }
+
   async requests(params: {
     skip?: number;
     take?: number;
@@ -32,20 +37,32 @@ export class RequestsService {
   }
 
   async createRequest(data: Prisma.RequestCreateInput) {
-    const request = this.prisma.request.create({ data });
-    return request;
+    try {
+      const request = this.prisma.request.create({ data });
+      return request;
+    } catch (error) {
+      throw new HttpException('internal server error', 500);
+    }
   }
 
   async updateRequest(params: {
     where: Prisma.RequestWhereUniqueInput;
     data: Prisma.RequestUpdateInput;
   }) {
-    const { where, data } = params;
-    const request = this.prisma.request.update({ where, data });
-    return request;
+    try {
+      const { where, data } = params;
+      const request = this.prisma.request.update({ where, data });
+      return request;
+    } catch (error) {
+      throw new HttpException('internal server error', 500);
+    }
   }
 
   async deleteRequest(where: Prisma.RequestWhereUniqueInput) {
-    return this.prisma.request.delete({ where });
+    try {
+      return this.prisma.request.delete({ where });
+    } catch (error) {
+      throw new HttpException('internal server error', 500);
+    }
   }
 }

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { Prisma, Request } from '@prisma/client';
 import { CookieAuthenticationGuard } from 'src/auth/guards/cookieAuthentication.guard';
 import { UserService } from 'src/users/user.service';
@@ -11,21 +19,31 @@ export class RequestsController {
     private readonly userService: UserService,
   ) {}
 
-  @Get('')
-  @UseGuards(CookieAuthenticationGuard)
-  async getRequeststoUser(@Param('id') id: number): Promise<Request[]> {
+  @HttpCode(200)
+  @Get(':id')
+  async getRequestsById(@Param('id') id: number): Promise<Request[]> {
     const requests = await this.requestService.requests({
       where: { id, accepted: false },
     });
     return requests;
   }
 
+  @HttpCode(200)
   @Post(':to')
-  @UseGuards(CookieAuthenticationGuard)
-  async sendRequest(@Param('user') userId: number, @Param('to') toId: number) {
+  async sendRequest(@Param('user') user: number, @Param('to') to: number) {
     const request = await this.requestService.createRequest({
-      from: { connect: { id: Number(userId) } },
-      to: { connect: { id: Number(toId) } },
+      from: { connect: { id: Number(user) } },
+      to: { connect: { id: Number(to) } },
+    });
+    return request;
+  }
+
+  @HttpCode(200)
+  @Post('accept/:id')
+  async accept(@Param('id') id: number) {
+    const request = await this.requestService.updateRequest({
+      where: { id: Number(id) },
+      data: { accepted: true },
     });
     return request;
   }
