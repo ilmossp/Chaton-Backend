@@ -15,9 +15,9 @@ export class RequestsService {
   async requests(params: {
     skip?: number;
     take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
+    cursor?: Prisma.RequestWhereUniqueInput;
+    where?: Prisma.RequestWhereInput;
+    orderBy?: Prisma.RequestOrderByWithRelationInput;
   }) {
     const { skip, take, cursor, where, orderBy } = params;
 
