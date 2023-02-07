@@ -8,10 +8,9 @@ export class RequestsService {
 
   async request(requestWhereUniqueInput: Prisma.RequestWhereUniqueInput) {
     try {
-      const request = await this.prisma.request.findUnique({
+      return this.prisma.request.findUnique({
         where: requestWhereUniqueInput,
       });
-      return request;
     } catch (error) {
       throw new HttpException('internal server error', 500);
     }
@@ -26,20 +25,18 @@ export class RequestsService {
   }) {
     const { skip, take, cursor, where, orderBy } = params;
 
-    const request = await this.prisma.request.findMany({
+    return this.prisma.request.findMany({
       skip,
       take,
       cursor,
       where,
       orderBy,
     });
-    return request;
   }
 
   async createRequest(data: Prisma.RequestCreateInput) {
     try {
-      const request = this.prisma.request.create({ data });
-      return request;
+      return this.prisma.request.create({ data });
     } catch (error) {
       throw new HttpException('internal server error', 500);
     }
@@ -51,11 +48,26 @@ export class RequestsService {
   }) {
     try {
       const { where, data } = params;
-      const request = this.prisma.request.update({ where, data });
-      return request;
+      return this.prisma.request.update({ where, data });
     } catch (error) {
       throw new HttpException('internal server error', 500);
     }
+  }
+
+  async sendRequest(from: number, to: number) {
+    return this.prisma.request.create({
+      data: {
+        from: { connect: { id: from } },
+        to: { connect: { id: to } },
+      },
+    });
+  }
+
+  async acceptRequest(id: number) {
+    return this.prisma.request.update({
+      where: { id },
+      data: { accepted: true },
+    });
   }
 
   async deleteRequest(where: Prisma.RequestWhereUniqueInput) {
