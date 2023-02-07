@@ -1,8 +1,8 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsInt } from "class-validator";
+import { IsNotEmpty } from "class-validator";
 import CreateUserDto from "./createUser.dto";
 
 export default class UpdateUserDto extends PartialType(CreateUserDto){
-  @IsInt()
+  @IsNotEmpty()
   id: number;
 }
