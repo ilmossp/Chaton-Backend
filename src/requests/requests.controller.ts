@@ -1,12 +1,14 @@
-import { Controller, Get, HttpCode, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { CookieAuthenticationGuard } from 'src/auth/guards/cookieAuthentication.guard';
 import { RequestsService } from './requests.service';
 
 @Controller('/user/:user/requests/')
+@UseGuards(CookieAuthenticationGuard)
 export class RequestsController {
   constructor(
     private readonly requestService: RequestsService
   ) {}
-  
+
   @HttpCode(200)
   @Get(':id')
   async getRequestsByUserId(@Param('id',ParseIntPipe) id: number) {

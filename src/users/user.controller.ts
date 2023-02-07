@@ -7,19 +7,16 @@ import UpdateUserDto from './dto/updateUser.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
-@UseGuards(CookieAuthenticationGuard)
 export class UserController {
   constructor(private readonly UserService: UserService) {}
 
   @Get(':id')
+  @UseGuards(CookieAuthenticationGuard)
   async getUserById(@Param('id',ParseIntPipe) id: number): Promise<User> {
     return this.UserService.user({ id });
   }
 
-  @Get(':email')
-  async getUserByEmail(@Param('email') email: string): Promise<User> {
-    return this.UserService.user({ email: String(email) });
-  }
+  
   @Post()
   async registerUser(@Body() userData: CreateUserDto): Promise<User> {
     return this.UserService.createUser(userData);
