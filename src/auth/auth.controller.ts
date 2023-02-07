@@ -8,11 +8,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import RegistrateUserDto from './dto/registrateUser.dto';
 import RequestWithUser from './interfaces/requestWithUser.interface';
 import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
 import { Response as ExpressResponse } from "express";
 import { CookieAuthenticationGuard } from './guards/cookieAuthentication.guard';
+import CreateUserDto from 'src/users/dto/createUser.dto';
 
 
 @Controller('auth')
@@ -20,8 +20,8 @@ export class AuthController {
   constructor(private readonly AuthService: AuthService) {}
 
   @Post('register')
-  async register(@Body() registrationData: RegistrateUserDto) {
-    return this.AuthService.registerUser(registrationData);
+  async register(@Body() UserRegistrationData: CreateUserDto) {
+    return this.AuthService.registerUser(UserRegistrationData);
   }
 
   @HttpCode(200)
