@@ -1,32 +1,32 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { Prisma, Request } from '@prisma/client';
-import { CookieAuthenticationGuard } from 'src/auth/guards/cookieAuthentication.guard';
-import { UserService } from 'src/users/user.service';
+import { Controller, Get, HttpCode, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { RequestsService } from './requests.service';
 
 @Controller('/user/:user/requests/')
 export class RequestsController {
   constructor(
-    private readonly requestService: RequestsService,
-    private readonly userService: UserService,
+    private readonly requestService: RequestsService
   ) {}
-
-  @Get('')
-  @UseGuards(CookieAuthenticationGuard)
-  async getRequeststoUser(@Param('id') id: number): Promise<Request[]> {
+  
+  @HttpCode(200)
+  @Get(':id')
+  async getRequestsByUserId(@Param('id',ParseIntPipe) id: number) {
     const requests = await this.requestService.requests({
       where: { id, accepted: false },
     });
     return requests;
   }
 
+  @HttpCode(200)
   @Post(':to')
-  @UseGuards(CookieAuthenticationGuard)
-  async sendRequest(@Param('user') userId: number, @Param('to') toId: number) {
-    const request = await this.requestService.createRequest({
-      from: { connect: { id: Number(userId) } },
-      to: { connect: { id: Number(toId) } },
-    });
+  async sendRequest(@Param('user',ParseIntPipe) user: number, @Param('to',ParseIntPipe) to: number) {
+    const request = await this.requestService.sendRequest(user, to);
+    return request;
+  }
+
+  @HttpCode(200)
+  @Post('accept/:id')
+  async accept(@Param('id',ParseIntPipe) id: number) {
+    const request = await this.requestService.acceptRequest(id);
     return request;
   }
 }

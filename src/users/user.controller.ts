@@ -1,17 +1,19 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { CookieAuthenticationGuard } from 'src/auth/guards/cookieAuthentication.guard';
 import CreateUserDto from './dto/createUser.dto';
 import UpdateUserDto from './dto/updateUser.dto';
 
 import { UserService } from './user.service';
 
 @Controller('user')
+@UseGuards(CookieAuthenticationGuard)
 export class UserController {
   constructor(private readonly UserService: UserService) {}
 
   @Get(':id')
-  async getUserById(@Param('id') id: number): Promise<User> {
-    return this.UserService.user({ id: Number(id) });
+  async getUserById(@Param('id',ParseIntPipe) id: number): Promise<User> {
+    return this.UserService.user({ id });
   }
 
   @Get(':email')
