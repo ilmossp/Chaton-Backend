@@ -11,9 +11,10 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './users/user.module';
 import { MessageModule } from './message/message.module';
 import { RequestsModule } from './requests/requests.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
-  imports: [AuthModule, UserModule, MessageModule,ConfigModule.forRoot({ isGlobal: true }), RequestsModule],
+  imports: [AuthModule, UserModule, MessageModule,ConfigModule.forRoot({ isGlobal: true }), RequestsModule, ChatModule],
   controllers: [AppController, UserController, MessageController],
   providers: [AppService, PrismaService, UserService, MessageService],
 })
