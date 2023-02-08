@@ -5,7 +5,7 @@ import {
 } from '@nestjs/websockets';
 
 @WebSocketGateway()
-export class GateWay {
+export class MessageGateWay {
   @SubscribeMessage('message')
   handleMessage(@MessageBody() data: string) {
     return data;
