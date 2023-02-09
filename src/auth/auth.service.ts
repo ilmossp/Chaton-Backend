@@ -3,13 +3,13 @@ import { UserService } from 'src/users/user.service';
 import * as bcrypt from 'bcrypt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { User } from '@prisma/client';
-import RegistrateUserDto from './dto/registrateUser.dto';
+import CreateUserDto from 'src/users/dto/createUser.dto';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly UserService: UserService) {}
 
-  async registerUser(registrationData: RegistrateUserDto): Promise<User> {
+  async registerUser(registrationData: CreateUserDto): Promise<User> {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
     try {
       const user = await this.UserService.createUser({
