@@ -4,10 +4,9 @@ import { PrismaService } from 'src/prisma-service/prisma.service';
 
 @Injectable()
 export class MessageService {
+  constructor(private prisma: PrismaService) {}
 
-    constructor(private prisma: PrismaService){}
-
-    async message(
+  async message(
     postWhereUniqueInput: Prisma.MessageWhereUniqueInput,
   ): Promise<Message | null> {
     return this.prisma.message.findUnique({
@@ -15,7 +14,7 @@ export class MessageService {
     });
   }
 
-  async posts(params: {
+  async messages(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.MessageWhereUniqueInput;
@@ -31,14 +30,20 @@ export class MessageService {
       orderBy,
     });
   }
+  async getMessagesByUserID(userID:number){
+    const messages = await this.messages({where: {OR: [
+      {senderId: userID},{receiverId:userID}
+    ]}})
+    return messages
 
-  async createPost(data: Prisma.MessageCreateInput): Promise<Message> {
+  }
+  async createMessage(data: Prisma.MessageCreateInput): Promise<Message> {
     return this.prisma.message.create({
       data,
     });
   }
 
-  async updatePost(params: {
+  async updateMessage(params: {
     where: Prisma.MessageWhereUniqueInput;
     data: Prisma.MessageUpdateInput;
   }): Promise<Message> {
@@ -49,7 +54,7 @@ export class MessageService {
     });
   }
 
-  async deletePost(where: Prisma.MessageWhereUniqueInput): Promise<Message> {
+  async deleteMessage(where: Prisma.MessageWhereUniqueInput): Promise<Message> {
     return this.prisma.message.delete({
       where,
     });
