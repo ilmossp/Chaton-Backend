@@ -30,7 +30,13 @@ export class MessageService {
       orderBy,
     });
   }
+  async getMessagesByUserID(userID:number){
+    const messages = await this.messages({where: {OR: [
+      {senderId: userID},{receiverId:userID}
+    ]}})
+    return messages
 
+  }
   async createMessage(data: Prisma.MessageCreateInput): Promise<Message> {
     return this.prisma.message.create({
       data,
