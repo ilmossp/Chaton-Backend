@@ -7,7 +7,7 @@ import CreateUserDto from 'src/users/dto/createUser.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly UserService: UserService) {}
+  constructor(private readonly UserService: UserService) { }
 
   async registerUser(registrationData: CreateUserDto): Promise<User> {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
