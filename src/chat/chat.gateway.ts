@@ -1,33 +1,30 @@
-import { Logger, OnModuleInit, UseGuards } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import {
   MessageBody,
+  OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { log } from 'console';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { CookieAuthenticationGuard } from 'src/auth/guards/cookieAuthentication.guard';
 
-@WebSocketGateway(3001)
+@WebSocketGateway()
 @UseGuards(CookieAuthenticationGuard)
-export class ChatGateway implements OnModuleInit {
-  
+export class ChatGateway implements OnGatewayConnection {
   private readonly logger = new Logger(ChatGateway.name);
-  
+
   @WebSocketServer()
   server: Server;
 
-  onModuleInit() {
-    this.server.on('connection', (socket) => {
-      this.server.emit("connected", "welcome back")
-    });
+  handleConnection(socket: Socket) {
+    this.logger.debug('New connection');
+    socket.emit('connection', 'Successfully connected to server');
   }
 
-
-  @SubscribeMessage('send_message')
-  handleMessage(@MessageBody() data: string) {
-    this.logger.log('message received: ' + data);
+  @SubscribeMessage('message')
+  messageHandler(@MessageBody() message: string): string {
+    this.logger.debug(`New message: ${message}`);
+    return message;
   }
-
 }
